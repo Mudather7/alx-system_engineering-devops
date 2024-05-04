@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#connect to server using a pravite key
+ssh -i ~/.ssh/school ubuntu@204.236.240.197
