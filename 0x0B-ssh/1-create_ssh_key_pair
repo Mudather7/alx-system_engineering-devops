@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Define the private key name and passphrase
 PRIVATE_KEY_NAME="school"
