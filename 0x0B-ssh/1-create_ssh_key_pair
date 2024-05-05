@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Define the private key name and passphrase
+PRIVATE_KEY_NAME="school"
+PASSPHRASE="betty"
+
+# Generate the RSA key pair with the specified name, bits, and passphrase
+ssh-keygen -t rsa -b 4096 -C "$PRIVATE_KEY_NAME" -N "$PASSPHRASE" -f "$PRIVATE_KEY_NAME"
