@@ -1,32 +1,39 @@
 #!/usr/bin/env bash
-# Configures a new ubuntu machine by installing
-# Nginx where it should be listening on port 80
-# Serve a page that would return a Hello World string
-#
 
-echo -e "Updating and installing Nginx.\n"
-sudo apt-get update -y -qq && \
-	 sudo apt-get install nginx -y
+# Update package lists
+sudo apt-get update -y
 
-echo -e "\nSetting up some minor stuff.\n"
+# Install Nginx
+sudo apt-get install -y nginx
 
-# starting nginx service
-sudo service nginx start
+# Remove the default configuration file
+sudo rm /etc/nginx/sites-enabled/default
 
-# allowing nginx on firewall
-sudo ufw allow 'Nginx HTTP'
+# Create a new configuration file
+cat > /etc/nginx/sites-available/hello-world <<EOF
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-# Give the user ownership to website files for easy editing
-sudo chown -R "$USER":"$USER" /var/www/html
-sudo chmod -R 755 /var/www
+    root /var/www/html;
+    index index.html index.htm;
 
-# Backup default index
-cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
+    location / {
+        try_files $uri $uri/ =404;
+    }
 
-# Creating new index
-echo -e "Hello World!" | dd status=none of=/var/www/html/index.nginx-debian.html
+    location = / {
+        return 200 'Hello World!';
+        content_type text/plain;
+    }
+}
+EOF
 
-# Restarting nginx
+# Create a symbolic link to enable the new configuration file
+sudo ln -s /etc/nginx/sites-available/hello-world /etc/nginx/sites-enabled/
+
+# Test the configuration
+sudo nginx -t
+
+# Restart Nginx (without using systemctl)
 sudo service nginx restart
-
-echo -e "\nCompleted. ✅\n"
